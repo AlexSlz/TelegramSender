@@ -47,20 +47,6 @@ document.getElementById('remove').addEventListener('click', () => {
     console.log('Everything was removed')
   })
 })
-
-/*
-document.getElementById('test').addEventListener('click', () => {
-  let text = document.getElementById('test-input').value
-  console.log(toAscii(text))
-  window.open(
-    `tgsender://auth=${
-      document.getElementById('mobile-phone').value
-    }/getcontact/getchannel=${toAscii(text)}`,
-    '_blank'
-  )
-  sendMessageToBackGround('getContact')
-})
-*/
 document.getElementById('getAction').addEventListener('click', () => {
   let phone = document.getElementById('mobile-phone').value
   let req = `tgsender://auth=${toAscii(phone)}`

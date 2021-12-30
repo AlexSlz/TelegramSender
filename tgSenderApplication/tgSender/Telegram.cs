@@ -35,18 +35,39 @@ namespace tgSender
         public async static Task<string> SendFile(string[] param)
         {
             string[] file = DManager.getTypeAndName();
-            //await client.SendMessageAsync(new TLInputPeerChannel() { ChannelId = 1319689979, AccessHash = 8028918482939018018 }, "aboba");
-            var fileResult = (TLInputFile)await client.UploadFile(file[1], new StreamReader(path + file[0] + "\\" + file[1]));
+
+            TLInputFile fileResult = (TLInputFile)await client.UploadFile(file[1], new StreamReader(path + file[0] + "\\" + file[1])); ;
             try
             {
                 await client.SendUploadedDocument(new TLInputPeerUser() { UserId = int.Parse(param[0]), AccessHash = long.Parse(param[1]) }, fileResult, "", file[2], new TLVector<TLAbsDocumentAttribute>());
             }
             catch (Exception)
             {
-                await client.SendUploadedDocument(new TLInputPeerChannel() { ChannelId = int.Parse(param[0]), AccessHash = long.Parse(param[1]) }, fileResult, "", file[2], new TLVector<TLAbsDocumentAttribute>());
+                try
+                {
+                    await client.SendUploadedDocument(new TLInputPeerChannel() { ChannelId = int.Parse(param[0]), AccessHash = long.Parse(param[1]) }, fileResult, "", file[2], new TLVector<TLAbsDocumentAttribute>());
+                }
+                catch (Exception)
+                {
+                    await SendMsg(new string[] { param[0], param[1], DManager.url });
+                }
             }
             return "OK";
         }
+
+        async static Task<string> SendMsg(string[] param)
+        {
+            try
+            {
+                await client.SendMessageAsync(new TLInputPeerUser() { UserId = int.Parse(param[0]), AccessHash = long.Parse(param[1]) }, param[2]);
+            }
+            catch (Exception)
+            {
+                await client.SendMessageAsync(new TLInputPeerChannel() { ChannelId = int.Parse(param[0]), AccessHash = long.Parse(param[1]) }, param[2]);
+            }
+            return "OK";
+        }
+
         public async static Task<string> GetChannel(string[] param)
         {
             string jsonData = "{\"channel\":[";

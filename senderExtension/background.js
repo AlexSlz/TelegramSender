@@ -67,6 +67,7 @@ var TempVideoDownload = {
 loadData()
 function loadData() {
   chrome.contextMenus.removeAll()
+
   chrome.contextMenus.create(contextMenuImage)
   chrome.contextMenus.create(TempImgDownload)
 
@@ -94,22 +95,23 @@ function loadData() {
     }
   })
   chrome.storage.local.get('channels', function (result) {
-    if (result.channels != undefined)
+    if (result.channels != undefined) {
       addUser(result.channels.channel, {
         title: 'title',
         parentId: 'img',
         contexts: 'image',
       })
-    addUser(result.channels.channel, {
-      title: 'title',
-      parentId: 'video',
-      contexts: 'video',
-    })
-    addUser(result.channels.channel, {
-      title: 'title',
-      parentId: 'audio',
-      contexts: 'audio',
-    })
+      addUser(result.channels.channel, {
+        title: 'title',
+        parentId: 'video',
+        contexts: 'video',
+      })
+      addUser(result.channels.channel, {
+        title: 'title',
+        parentId: 'audio',
+        contexts: 'audio',
+      })
+    }
   })
 }
 
@@ -133,12 +135,14 @@ chrome.contextMenus.onClicked.addListener((data) => {
   ) {
     send(data)
   }
+  if (data.menuItemId.includes('select')) {
+    console.log(data)
+  }
 })
 
 async function send(data) {
   connectAndGetMsg()
   let req = 'tgsender:/'
-  req += `/auth=${toAscii(await getDataFromStorage('phoneNumber'))}`
   if (
     data.mediaType == 'image' ||
     data.mediaType == 'video' ||
@@ -147,6 +151,7 @@ async function send(data) {
     req += `/downloadImg=${toAscii(data.srcUrl)},${toAscii(data.pageUrl)}`
   }
   if (!data.menuItemId.includes('download')) {
+    req += `/auth=${toAscii(await getDataFromStorage('phoneNumber'))}`
     req += `/sendFile=${toAscii(data.menuItemId.split('/')[1])},${toAscii(
       data.menuItemId.split('/')[2]
     )}`

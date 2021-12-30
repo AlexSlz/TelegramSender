@@ -22,32 +22,34 @@ namespace tgSender
             Directory.CreateDirectory(path + "\\Downloads\\" + name);
             return "\\Downloads\\" + name;
         }
-        static string url;
+        public static string url;
         static string folderName;
         static int countFiles;
         public async static Task<string> Download(string[] param)
         {
+            url = param[0];
+            folderName = param[1];
+            folderName = folderName.Remove(0, "https://".Length).Split('/')[0];
+            folderName = CreateFolder(folderName);
+            client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
+            countFiles = Directory.GetFiles(path + $"\\{folderName}", "*", SearchOption.AllDirectories).Length + 1;
             try
             {
-                url = param[0];
-                folderName = param[1];
-                folderName = folderName.Remove(0, "https://".Length).Split('/')[0];
-                folderName = CreateFolder(folderName);
-                client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
-                countFiles = Directory.GetFiles(path + $"\\{folderName}", "*", SearchOption.AllDirectories).Length + 1;
                 var foo = client.DownloadFileTaskAsync(new Uri(url), path + $"{folderName}\\{countFiles}.{getType(url).name}");
                 foo.Wait();
             }
             catch (Exception)
             {
                 Console.WriteLine("NOT WORKiNG");
-                Console.ReadLine();
             }
             return "OK";
         }
         public static string[] getTypeAndName()
         {
-            return new [] { folderName, countFiles + "." + getType(url).name, getType(url).MIME};
+            if (folderName != null)
+                return new[] { folderName, countFiles + "." + getType(url).name, getType(url).MIME };
+            else
+                return null;
         }
         static FilesType getType(string url)
         {
