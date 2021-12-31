@@ -148,12 +148,12 @@ async function send(data) {
     data.mediaType == 'video' ||
     data.mediaType == 'audio'
   ) {
-    req += `/downloadImg=${toAscii(data.srcUrl)},${toAscii(data.pageUrl)}`
+    req += `/downloadImg=${toAscii(data.srcUrl + ',' + data.pageUrl)}`
   }
   if (!data.menuItemId.includes('download')) {
     req += `/auth=${toAscii(await getDataFromStorage('phoneNumber'))}`
-    req += `/sendFile=${toAscii(data.menuItemId.split('/')[1])},${toAscii(
-      data.menuItemId.split('/')[2]
+    req += `/sendFile=${toAscii(
+      data.menuItemId.split('/')[1] + ',' + data.menuItemId.split('/')[2]
     )}`
   }
   //console.log(req)

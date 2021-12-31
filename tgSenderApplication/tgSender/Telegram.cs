@@ -49,7 +49,14 @@ namespace tgSender
                 }
                 catch (Exception)
                 {
-                    await SendMsg(new string[] { param[0], param[1], DManager.url });
+                    try
+                    {
+                        await client.SendUploadedDocument(new TLInputPeerChat() { ChatId = int.Parse(param[0]) }, fileResult, "", file[2], new TLVector<TLAbsDocumentAttribute>());
+                    }
+                    catch (Exception)
+                    {
+                        await SendMsg(new string[] { param[0], param[1], DManager.url });
+                    }
                 }
             }
             return "OK";
@@ -63,7 +70,14 @@ namespace tgSender
             }
             catch (Exception)
             {
-                await client.SendMessageAsync(new TLInputPeerChannel() { ChannelId = int.Parse(param[0]), AccessHash = long.Parse(param[1]) }, param[2]);
+                try
+                {
+                    await client.SendMessageAsync(new TLInputPeerChannel() { ChannelId = int.Parse(param[0]), AccessHash = long.Parse(param[1]) }, param[2]);
+                }
+                catch(Exception)
+                {
+                    await client.SendMessageAsync(new TLInputPeerChat() { ChatId = int.Parse(param[0]) }, param[2]);
+                }
             }
             return "OK";
         }

@@ -39,11 +39,10 @@ namespace tgSender
                     string tempCommandName = tmpText[0];
                     string[] tempCommandArgs = null;
                     if (tmpText.Length > 1)
-                    tempCommandArgs = tmpText[1].Contains(',') ? tmpText[1].Split(',') : new string[] { tmpText[1] };
+                    tempCommandArgs = stringParse(tmpText[1]).Contains(',') ? stringParse(tmpText[1]).Split(',') : new string[] { stringParse(tmpText[1]) };
                     Console.WriteLine(tempCommandName);
                     for (int i = 0; i < tempCommandArgs.Length; i++)
                     {
-                        tempCommandArgs[i] = stringParse(tempCommandArgs[i]);
                         Console.WriteLine("- " + tempCommandArgs[i]);
                     }
                     foreach (Commands command in _commands)
