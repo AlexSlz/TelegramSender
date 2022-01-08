@@ -23,6 +23,13 @@ chrome.extension.onMessage.addListener(function (message) {
       }
       loadData()
     })
+  } else if (message == 'checkProtocol') {
+    connectAndGetMsg((e) => {
+      chrome.storage.local.set({
+        protocol: e.target.result,
+      })
+      console.log(e.target.result)
+    })
   }
 })
 
@@ -36,45 +43,42 @@ function connectAndGetMsg(callback) {
   }
 }
 
-var contextMenuImage = {
-  'id': 'img',
-  'title': 'SendImage',
-  'contexts': ['image'],
-}
-var contextMenuAudio = {
-  'id': 'audio',
-  'title': 'SendAudio',
-  'contexts': ['audio'],
-}
-var contextMenuVideo = {
-  'id': 'video',
-  'title': 'SendVideo',
-  'contexts': ['video'],
-}
-var TempImgDownload = {
-  'id': 'img-download',
-  'parentId': 'img',
-  'title': 'JustDownload',
-  'contexts': ['image'],
-}
-var TempVideoDownload = {
-  'id': 'video-download',
-  'parentId': 'video',
-  'title': 'JustDownload',
-  'contexts': ['video'],
-}
+let contextMenuItem = [
+  {
+    'id': 'img',
+    'title': 'SendImage',
+    'contexts': ['image'],
+  },
+  {
+    'id': 'audio',
+    'title': 'SendAudio',
+    'contexts': ['audio'],
+  },
+  {
+    'id': 'video',
+    'title': 'SendVideo',
+    'contexts': ['video'],
+  },
+  {
+    'id': 'img-download',
+    'parentId': 'img',
+    'title': 'JustDownload',
+    'contexts': ['image'],
+  },
+  {
+    'id': 'video-download',
+    'parentId': 'video',
+    'title': 'JustDownload',
+    'contexts': ['video'],
+  },
+]
 
 loadData()
 function loadData() {
   chrome.contextMenus.removeAll()
-
-  chrome.contextMenus.create(contextMenuImage)
-  chrome.contextMenus.create(TempImgDownload)
-
-  chrome.contextMenus.create(contextMenuAudio)
-
-  chrome.contextMenus.create(contextMenuVideo)
-  chrome.contextMenus.create(TempVideoDownload)
+  contextMenuItem.forEach((item) => {
+    chrome.contextMenus.create(item)
+  })
   chrome.storage.local.get('contacts', function (result) {
     if (result.contacts != undefined) {
       addUser(result.contacts.contact, {
@@ -148,7 +152,7 @@ async function send(data) {
     data.mediaType == 'video' ||
     data.mediaType == 'audio'
   ) {
-    req += `/downloadImg=${toAscii(data.srcUrl + ',' + data.pageUrl)}`
+    req += `/download=${toAscii(data.srcUrl + ',' + data.pageUrl)}`
   }
   if (!data.menuItemId.includes('download')) {
     req += `/auth=${toAscii(await getDataFromStorage('phoneNumber'))}`

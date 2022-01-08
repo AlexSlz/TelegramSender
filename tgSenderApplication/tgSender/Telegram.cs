@@ -34,11 +34,12 @@ namespace tgSender
         }
         public async static Task<string> SendFile(string[] param)
         {
-            string[] file = DManager.getTypeAndName();
-
-            TLInputFile fileResult = (TLInputFile)await client.UploadFile(file[1], new StreamReader(path + file[0] + "\\" + file[1])); ;
+            TLInputFile fileResult = null;
+            string[] file = null;
             try
             {
+                file = DManager.getTypeAndName();
+                fileResult = (TLInputFile)await client.UploadFile(file[1], new StreamReader(path + file[0] + "\\" + file[1]));
                 await client.SendUploadedDocument(new TLInputPeerUser() { UserId = int.Parse(param[0]), AccessHash = long.Parse(param[1]) }, fileResult, "", file[2], new TLVector<TLAbsDocumentAttribute>());
             }
             catch (Exception)
@@ -55,7 +56,7 @@ namespace tgSender
                     }
                     catch (Exception)
                     {
-                        await SendMsg(new string[] { param[0], param[1], DManager.url });
+                        await SendMsg(new string[] { param[0], param[1], DManager.link });
                     }
                 }
             }

@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands.cs" />
+    <Compile Include="ConsoleManipulation.cs" />
     <Compile Include="FilesType.cs" />
     <Compile Include="IconManager.cs" />
     <Compile Include="DManager.cs" />

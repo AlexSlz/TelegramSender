@@ -37,20 +37,23 @@ namespace tgSender
                 {
                     string[] tmpText = temp.Split('=');
                     string tempCommandName = tmpText[0];
+                    Console.WriteLine($"\nCommand Name: {tempCommandName}");
                     string[] tempCommandArgs = null;
                     if (tmpText.Length > 1)
-                    tempCommandArgs = stringParse(tmpText[1]).Contains(',') ? stringParse(tmpText[1]).Split(',') : new string[] { stringParse(tmpText[1]) };
-                    Console.WriteLine(tempCommandName);
-                    for (int i = 0; i < tempCommandArgs.Length; i++)
                     {
-                        Console.WriteLine("- " + tempCommandArgs[i]);
+                        tempCommandArgs = stringParse(tmpText[1]).Contains(',') ? stringParse(tmpText[1]).Split(',') : new string[] { stringParse(tmpText[1]) };
+                        Console.WriteLine("Command Params:");
+                        for (int i = 0; i < tempCommandArgs.Length; i++)
+                        {
+                            Console.WriteLine($"- {tempCommandArgs[i]}");
+                        }
                     }
                     foreach (Commands command in _commands)
                     {
                         if (command.Name == tempCommandName)
                         {
-                            var foo = command.make(tempCommandArgs);
-                                foo.Wait();
+                            ConsoleManipulation console = new ConsoleManipulation(command.make, tempCommandArgs);
+                            console.Wait();
                         }
                     }
                 }

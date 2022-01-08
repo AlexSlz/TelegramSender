@@ -28,6 +28,13 @@ function loadData() {
     if (result.ChannelTextBox != undefined)
       document.getElementById('nameChannel-input').value = result.ChannelTextBox
   })
+
+  chrome.storage.local.get('protocol', function (result) {
+    if (result.protocol == undefined) {
+      alert('install protocol(open tgSender)')
+      checkProtocol()
+    }
+  })
 }
 
 function addContactTolist(name, id, AccessHash) {
@@ -73,6 +80,12 @@ document.getElementById('getAction').addEventListener('click', () => {
   })
 })
 
+document.getElementById('deleteRegEdit').addEventListener('click', () => {
+  let req = `tgsender://delete`
+  chrome.storage.local.remove('protocol')
+  window.open(req, '_blank')
+})
+
 function sendMessage(message) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, message)
@@ -87,4 +100,10 @@ function toAscii(s) {
     text += '$' + item.charCodeAt(0)
   })
   return text
+}
+
+let checkProtocol = () => {
+  let req = `tgsender://checkproto=test`
+  sendMessageToBackGround('checkProtocol')
+  window.open(req, '_blank')
 }
