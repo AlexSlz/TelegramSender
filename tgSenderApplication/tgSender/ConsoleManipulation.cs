@@ -38,7 +38,13 @@ namespace tgSender
                 }
                 Console.Write($"{commandText}{Animation[i]}");
                 Thread.Sleep(100);
-                Console.SetCursorPosition(Console.CursorLeft - commandText.Length - 1, Console.CursorTop);
+                try
+                {
+                    Console.SetCursorPosition(Console.CursorLeft - commandText.Length - 1, Console.CursorTop);
+                }
+                catch (Exception)
+                {
+                }
             }
         }
     }
